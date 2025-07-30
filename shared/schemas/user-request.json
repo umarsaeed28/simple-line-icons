@@ -1,0 +1,276 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "User Request Schema",
+  "description": "User input for room design processing",
+  "type": "object",
+  "properties": {
+    "request_id": {
+      "type": "string",
+      "description": "Unique identifier for this request"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "User identifier"
+    },
+    "room_geometry": {
+      "type": "object",
+      "oneOf": [
+        {
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["file"]
+            },
+            "file_url": {
+              "type": "string",
+              "format": "uri",
+              "description": "URL to SKP/GLB file"
+            },
+            "file_format": {
+              "type": "string",
+              "enum": ["skp", "glb", "gltf"]
+            }
+          },
+          "required": ["type", "file_url", "file_format"]
+        },
+        {
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["dimensions"]
+            },
+            "width_cm": {
+              "type": "number",
+              "minimum": 100
+            },
+            "length_cm": {
+              "type": "number",
+              "minimum": 100
+            },
+            "height_cm": {
+              "type": "number",
+              "minimum": 200
+            },
+            "openings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["door", "window", "archway"]
+                  },
+                  "position": {
+                    "type": "object",
+                    "properties": {
+                      "wall": {
+                        "type": "string",
+                        "enum": ["north", "south", "east", "west"]
+                      },
+                      "distance_from_corner_cm": {
+                        "type": "number",
+                        "minimum": 0
+                      }
+                    },
+                    "required": ["wall", "distance_from_corner_cm"]
+                  },
+                  "dimensions": {
+                    "type": "object",
+                    "properties": {
+                      "width_cm": {
+                        "type": "number",
+                        "minimum": 60
+                      },
+                      "height_cm": {
+                        "type": "number",
+                        "minimum": 180
+                      }
+                    },
+                    "required": ["width_cm", "height_cm"]
+                  }
+                },
+                "required": ["type", "position", "dimensions"]
+              }
+            }
+          },
+          "required": ["type", "width_cm", "length_cm", "height_cm"]
+        }
+      ]
+    },
+    "style_preference": {
+      "type": "object",
+      "oneOf": [
+        {
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["inspiration_spec_id"]
+            },
+            "inspiration_spec_id": {
+              "type": "string",
+              "description": "ID of existing inspiration spec"
+            }
+          },
+          "required": ["type", "inspiration_spec_id"]
+        },
+        {
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["reference_image"]
+            },
+            "image_url": {
+              "type": "string",
+              "format": "uri",
+              "description": "URL to reference image"
+            }
+          },
+          "required": ["type", "image_url"]
+        },
+        {
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["style_tags"]
+            },
+            "style_tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1,
+              "description": "User-provided style preferences"
+            }
+          },
+          "required": ["type", "style_tags"]
+        },
+        {
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["generate"]
+            },
+            "description": {
+              "type": "string",
+              "description": "Description for Designer Agent to generate inspiration spec"
+            }
+          },
+          "required": ["type"]
+        }
+      ]
+    },
+    "budget": {
+      "type": "object",
+      "properties": {
+        "min_usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "max_usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "currency": {
+          "type": "string",
+          "enum": ["USD", "EUR", "GBP", "CAD", "AUD"],
+          "default": "USD"
+        }
+      },
+      "required": ["max_usd"]
+    },
+    "keep_list": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of existing furniture piece"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["sofa", "chair", "table", "bed", "dresser", "nightstand", "bookshelf", "tv_stand", "coffee_table", "side_table", "dining_table", "dining_chair", "desk", "wardrobe", "mirror", "lamp", "rug", "artwork", "decor", "plant"]
+          },
+          "dimensions": {
+            "type": "object",
+            "properties": {
+              "width_cm": {
+                "type": "number",
+                "minimum": 0
+              },
+              "length_cm": {
+                "type": "number",
+                "minimum": 0
+              },
+              "height_cm": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "required": ["width_cm", "length_cm", "height_cm"]
+          },
+          "position": {
+            "type": "object",
+            "properties": {
+              "x_cm": {
+                "type": "number"
+              },
+              "y_cm": {
+                "type": "number"
+              },
+              "rotation_degrees": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 360
+              }
+            },
+            "description": "Fixed position for this item"
+          }
+        },
+        "required": ["name", "category", "dimensions"]
+      },
+      "description": "Existing furniture to keep in the design"
+    },
+    "room_type": {
+      "type": "string",
+      "enum": ["living_room", "bedroom", "dining_room", "kitchen", "office", "nursery", "guest_room", "studio"],
+      "description": "Type of room being designed"
+    },
+    "priority_items": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["sofa", "chair", "table", "bed", "dresser", "nightstand", "bookshelf", "tv_stand", "coffee_table", "side_table", "dining_table", "dining_chair", "desk", "wardrobe", "mirror", "lamp", "rug", "artwork", "decor", "plant"]
+      },
+      "description": "Items to prioritize in the design"
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "accessibility": {
+          "type": "boolean",
+          "description": "Ensure wheelchair accessibility"
+        },
+        "pet_friendly": {
+          "type": "boolean",
+          "description": "Consider pet-friendly materials and layout"
+        },
+        "child_safe": {
+          "type": "boolean",
+          "description": "Ensure child safety considerations"
+        },
+        "max_delivery_days": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum acceptable delivery time"
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": ["request_id", "user_id", "room_geometry", "style_preference", "budget", "room_type", "created_at"],
+  "additionalProperties": false
+}

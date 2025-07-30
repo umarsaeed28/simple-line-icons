@@ -1,0 +1,320 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Package Ready Schema",
+  "description": "Final output from User Agent with shopping list and room plan",
+  "type": "object",
+  "properties": {
+    "request_id": {
+      "type": "string",
+      "description": "Reference to original user request"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "User identifier"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["success", "partial_success", "failed"],
+      "description": "Overall processing status"
+    },
+    "inspiration_spec_used": {
+      "type": "object",
+      "description": "The inspiration spec that was applied",
+      "$ref": "#/definitions/inspiration_spec"
+    },
+    "room_plan": {
+      "type": "object",
+      "properties": {
+        "plan_image_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to 2D room plan PNG"
+        },
+        "plan_3d_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Optional 3D visualization URL"
+        },
+        "dimensions": {
+          "type": "object",
+          "properties": {
+            "width_cm": {
+              "type": "number"
+            },
+            "length_cm": {
+              "type": "number"
+            },
+            "height_cm": {
+              "type": "number"
+            }
+          },
+          "required": ["width_cm", "length_cm", "height_cm"]
+        },
+        "layout_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Quality score for furniture layout"
+        }
+      },
+      "required": ["plan_image_url", "dimensions", "layout_score"]
+    },
+    "shopping_list": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["sofa", "chair", "table", "bed", "dresser", "nightstand", "bookshelf", "tv_stand", "coffee_table", "side_table", "dining_table", "dining_chair", "desk", "wardrobe", "mirror", "lamp", "rug", "artwork", "decor", "plant"]
+          },
+          "dimensions": {
+            "type": "object",
+            "properties": {
+              "width_cm": {
+                "type": "number"
+              },
+              "length_cm": {
+                "type": "number"
+              },
+              "height_cm": {
+                "type": "number"
+              }
+            },
+            "required": ["width_cm", "length_cm", "height_cm"]
+          },
+          "position": {
+            "type": "object",
+            "properties": {
+              "x_cm": {
+                "type": "number"
+              },
+              "y_cm": {
+                "type": "number"
+              },
+              "rotation_degrees": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 360
+              }
+            },
+            "required": ["x_cm", "y_cm", "rotation_degrees"]
+          },
+          "price": {
+            "type": "object",
+            "properties": {
+              "amount": {
+                "type": "number",
+                "minimum": 0
+              },
+              "currency": {
+                "type": "string",
+                "enum": ["USD", "EUR", "GBP", "CAD", "AUD"]
+              }
+            },
+            "required": ["amount", "currency"]
+          },
+          "affiliate_link": {
+            "type": "string",
+            "format": "uri"
+          },
+          "partner_name": {
+            "type": "string"
+          },
+          "image_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "availability": {
+            "type": "object",
+            "properties": {
+              "in_stock": {
+                "type": "boolean"
+              },
+              "estimated_delivery_days": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": ["in_stock"]
+          },
+          "fit_check_passed": {
+            "type": "boolean",
+            "description": "Whether this item passed dimensional fit checks"
+          },
+          "alternative_count": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of alternative products available"
+          }
+        },
+        "required": ["product_id", "name", "category", "dimensions", "position", "price", "affiliate_link", "partner_name", "image_url", "availability", "fit_check_passed"]
+      },
+      "minItems": 1
+    },
+    "budget_summary": {
+      "type": "object",
+      "properties": {
+        "total_cost": {
+          "type": "number",
+          "minimum": 0
+        },
+        "currency": {
+          "type": "string",
+          "enum": ["USD", "EUR", "GBP", "CAD", "AUD"]
+        },
+        "budget_limit": {
+          "type": "number",
+          "minimum": 0
+        },
+        "under_budget": {
+          "type": "boolean"
+        },
+        "savings": {
+          "type": "number",
+          "description": "Amount under budget (if any)"
+        },
+        "breakdown": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string"
+              },
+              "count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "total_cost": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "required": ["category", "count", "total_cost"]
+          }
+        }
+      },
+      "required": ["total_cost", "currency", "budget_limit", "under_budget"]
+    },
+    "alternatives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "original_product_id": {
+            "type": "string"
+          },
+          "alternative_products": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "product_id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "price_difference": {
+                  "type": "number"
+                },
+                "style_match_score": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              },
+              "required": ["product_id", "name", "price_difference", "style_match_score"]
+            }
+          }
+        },
+        "required": ["original_product_id", "alternative_products"]
+      },
+      "description": "Alternative product suggestions for each item"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["fit_issue", "budget_exceeded", "style_mismatch", "availability_issue"]
+          },
+          "message": {
+            "type": "string"
+          },
+          "product_id": {
+            "type": "string",
+            "description": "Related product ID if applicable"
+          }
+        },
+        "required": ["type", "message"]
+      }
+    },
+    "processing_metadata": {
+      "type": "object",
+      "properties": {
+        "processing_time_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "products_evaluated": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "fit_checks_performed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ai_calls_made": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": ["request_id", "user_id", "status", "room_plan", "shopping_list", "budget_summary", "created_at"],
+  "additionalProperties": false,
+  "definitions": {
+    "inspiration_spec": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "style_tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "palette": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^#[0-9A-Fa-f]{6}$"
+          }
+        },
+        "mood": {
+          "type": "string"
+        }
+      },
+      "required": ["id", "name", "style_tags", "palette", "mood"]
+    }
+  }
+}
