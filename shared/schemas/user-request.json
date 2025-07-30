@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "UserRequest",
+  "type": "object",
+  "properties": {
+    "room_geometry": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "width": { "type": "number" },
+            "length": { "type": "number" },
+            "height": { "type": "number" },
+            "openings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "x": { "type": "number" },
+                  "y": { "type": "number" },
+                  "width": { "type": "number" },
+                  "height": { "type": "number" }
+                },
+                "required": ["x", "y", "width", "height"]
+              }
+            }
+          },
+          "required": ["width", "length", "height"]
+        },
+        { "type": "string", "description": "URL to .skp or .glb file" }
+      ]
+    },
+    "style_spec": { "$ref": "./inspiration-spec.json" },
+    "ref_image_url": { "type": "string", "format": "uri" },
+    "budget_usd": { "type": "number" },
+    "keep_list": { "type": "array", "items": { "type": "string" } }
+  },
+  "required": ["room_geometry", "budget_usd"]
+}

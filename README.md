@@ -1,76 +1,43 @@
-Simple line icons
-====
-[![Build Status](https://travis-ci.org/thesabbir/simple-line-icons.svg?branch=master)](https://travis-ci.org/thesabbir/simple-line-icons)
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/thesabbir/simple-line-icons?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# Room-in-a-Box Monorepo
 
-Simple line icons with CSS, SASS, LESS & Web-fonts files.
+This repository bootstraps a multi-agent  Room-in-a-Box  interior-design platform.
 
-Preview & Docs
-===
-[http://simplelineicons.com](http://simplelineicons.com)
+## Getting Started (Local Development)
 
+Prerequisites:
+- Docker & Docker Compose
+- Node 18+
 
-Installation
-====
-via [cdnjs](http://cdnjs.com/libraries/simple-line-icons)
-```html
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css">
-```
-via [bower](http://bower.io/search/?q=simple-line-icons)
+1. Copy `.env.template` to `.env` and fill in secrets.
+2. Build and start services:
 
-```shell
-
-bower install simple-line-icons --save
-
-```
-via [npm](https://www.npmjs.com/package/simple-line-icons)
-
-```shell
-
-npm install simple-line-icons --save
-
+```bash
+docker compose -f infra/docker-compose.yml up --build
 ```
 
-Or, you can also clone or [download this repository](https://github.com/thesabbir/simple-line-icons/archive/master.zip) as zip.
+3. Health checks:
 
-
-If you are a designers you can use [this creative cloud library](http://adobe.ly/2bQ48wl).
-
-Customizing LESS/SASS variables
-====
-
-### LESS:
-
-```less
-@simple-line-font-path        : "/path/to/font/files";
-@simple-line-font-family      : "desired-name-font-family";
-@simple-line-icon-prefix      : prefix-;
+```bash
+curl http://localhost:4001/health   # designer-agent
+curl http://localhost:4002/health   # data-agent
+curl http://localhost:4003/health   # user-agent
 ```
 
-### SASS:
+Each should respond `{ "status": "ok" }`.
 
-```sass
-$simple-line-font-path        : "/path/to/font/files";
-$simple-line-font-family      : "desired-name-font-family";
-$simple-line-icon-prefix      : "prefix-";
-```
+## Directory Map
 
+- `designer-agent/` &mdash; Generates style inspiration specs.
+- `data-agent/` &mdash; Normalises partner product feeds.
+- `user-agent/` &mdash; Creates dimension-correct shopping lists.
+- `shared/` &mdash; Schemas, utilities, fit checker.
+- `infra/` &mdash; Docker Compose & migrations.
+- `frontend/` &mdash; React Native app & Next.js admin dashboard.
 
-Credits
-===
-[Jamal Jama](https://twitter.com/byjml) for creating this awesome webfont & [Ahmad Firoz](https://twitter.com/firoz_usf) for extending it further.
+## Deployment
 
-Contributors
-====
-[Check Here](https://github.com/thesabbir/simple-line-icons/graphs/contributors)
+The front-end is intended to be deployed to Vercel / Expo. Agents run on Render, AWS Amplify, or Supabase.
 
-Contributions
-====
-Contributions are more then welcome. Keep them coming!
-Please make sure you have read our [guide line](/CONTRIBUTING.md).
+## Contributing
 
-License
-====
-You're free to use the web-font in a template/theme intended for sale on marketplaces like Themeforest.
-
-CSS, SCSS & LESS files are under [MIT License](/LICENSE.md).
+Use conventional commits. Run `pnpm lint` and ensure all `/health` endpoints are green before opening a PR.

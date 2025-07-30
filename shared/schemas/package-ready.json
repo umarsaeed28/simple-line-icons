@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ShoppingList",
+  "type": "object",
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "product_id": { "type": "string" },
+          "name": { "type": "string" },
+          "dims": { "$ref": "./product.json#/properties/dims" },
+          "price": { "type": "number" },
+          "affiliate_link": { "type": "string", "format": "uri" }
+        },
+        "required": ["product_id", "name", "dims", "price", "affiliate_link"]
+      }
+    },
+    "total_price": { "type": "number" }
+  },
+  "required": ["items", "total_price"]
+}
