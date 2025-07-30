@@ -1,0 +1,169 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Product",
+  "description": "Normalized product data from partner connectors",
+  "type": "object",
+  "required": ["id", "name", "price", "currency", "dimensions", "image_url", "affiliate_link", "availability", "created_at"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique product identifier"
+    },
+    "name": {
+      "type": "string",
+      "description": "Product name/title",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "description": {
+      "type": "string",
+      "description": "Product description",
+      "maxLength": 2000
+    },
+    "price": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Product price"
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "ISO 4217 currency code (e.g., USD, EUR)"
+    },
+    "original_price": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Original price before discounts"
+    },
+    "dimensions": {
+      "type": "object",
+      "required": ["width", "length", "height"],
+      "properties": {
+        "width": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Width in inches"
+        },
+        "length": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Length in inches"
+        },
+        "height": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Height in inches"
+        },
+        "weight": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Weight in pounds"
+        }
+      }
+    },
+    "materials": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of material descriptors",
+      "maxItems": 10
+    },
+    "colors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Available colors",
+      "maxItems": 10
+    },
+    "style_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Style descriptors for the product",
+      "maxItems": 10
+    },
+    "category": {
+      "type": "string",
+      "description": "Product category (e.g., 'sofa', 'table', 'chair')"
+    },
+    "subcategory": {
+      "type": "string",
+      "description": "Product subcategory"
+    },
+    "image_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Primary product image URL"
+    },
+    "image_urls": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      },
+      "description": "Additional product image URLs"
+    },
+    "affiliate_link": {
+      "type": "string",
+      "format": "uri",
+      "description": "Affiliate link to purchase the product"
+    },
+    "availability": {
+      "type": "string",
+      "enum": ["in_stock", "out_of_stock", "pre_order", "discontinued"],
+      "description": "Product availability status"
+    },
+    "stock_quantity": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Available stock quantity"
+    },
+    "rating": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 5,
+      "description": "Average customer rating"
+    },
+    "review_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of customer reviews"
+    },
+    "brand": {
+      "type": "string",
+      "description": "Product brand name"
+    },
+    "sku": {
+      "type": "string",
+      "description": "Stock keeping unit"
+    },
+    "partner_id": {
+      "type": "string",
+      "description": "Partner connector identifier"
+    },
+    "partner_product_id": {
+      "type": "string",
+      "description": "Original product ID from partner"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when product was created"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when product was last updated"
+    },
+    "embedding": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "description": "Vector embedding for semantic search"
+    }
+  }
+}

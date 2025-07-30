@@ -1,0 +1,184 @@
+version: '3.8'
+
+services:
+  # Infrastructure Services
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: room-in-a-box-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: password
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: room-in-a-box-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: room_in_a_box
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infra/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Agent Services
+  designer-agent:
+    build:
+      context: ./designer-agent
+      dockerfile: Dockerfile
+    container_name: room-in-a-box-designer-agent
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - LOG_LEVEL=info
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - RABBITMQ_URL=amqp://admin:password@rabbitmq:5672
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  data-agent:
+    build:
+      context: ./data-agent
+      dockerfile: Dockerfile
+    container_name: room-in-a-box-data-agent
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=development
+      - PORT=3002
+      - LOG_LEVEL=info
+      - RABBITMQ_URL=amqp://admin:password@rabbitmq:5672
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/room_in_a_box
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - AMAZON_ACCESS_KEY=${AMAZON_ACCESS_KEY}
+      - AMAZON_SECRET_KEY=${AMAZON_SECRET_KEY}
+      - AMAZON_PARTNER_TAG=${AMAZON_PARTNER_TAG}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  user-agent:
+    build:
+      context: ./user-agent
+      dockerfile: Dockerfile
+    container_name: room-in-a-box-user-agent
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=development
+      - PORT=3003
+      - LOG_LEVEL=info
+      - RABBITMQ_URL=amqp://admin:password@rabbitmq:5672
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/room_in_a_box
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - DESIGNER_AGENT_URL=http://designer-agent:3001
+      - DATA_AGENT_URL=http://data-agent:3002
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      designer-agent:
+        condition: service_healthy
+      data-agent:
+        condition: service_healthy
+    volumes:
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend Services
+  nextjs-admin:
+    build:
+      context: ./frontend/nextjs-admin
+      dockerfile: Dockerfile
+    container_name: room-in-a-box-admin
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:3000
+      - AUTH0_DOMAIN=${AUTH0_DOMAIN}
+      - AUTH0_CLIENT_ID=${AUTH0_CLIENT_ID}
+      - DESIGNER_AGENT_URL=http://designer-agent:3001
+      - DATA_AGENT_URL=http://data-agent:3002
+      - USER_AGENT_URL=http://user-agent:3003
+    depends_on:
+      - designer-agent
+      - data-agent
+      - user-agent
+    volumes:
+      - ./frontend/nextjs-admin:/app
+      - /app/node_modules
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Development Tools
+  redis:
+    image: redis:7-alpine
+    container_name: room-in-a-box-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+  rabbitmq_data:
+  redis_data:
+
+networks:
+  default:
+    name: room-in-a-box-network

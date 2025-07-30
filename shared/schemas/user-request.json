@@ -1,0 +1,177 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "User Design Request",
+  "description": "User request for room design processing",
+  "type": "object",
+  "required": ["id", "room_geometry", "budget_usd", "created_at"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the design request"
+    },
+    "room_geometry": {
+      "type": "object",
+      "required": ["width", "length", "height"],
+      "properties": {
+        "width": {
+          "type": "number",
+          "minimum": 1,
+          "description": "Room width in feet"
+        },
+        "length": {
+          "type": "number",
+          "minimum": 1,
+          "description": "Room length in feet"
+        },
+        "height": {
+          "type": "number",
+          "minimum": 1,
+          "description": "Room height in feet"
+        },
+        "openings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type", "position", "dimensions"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["door", "window", "fireplace", "closet"]
+              },
+              "position": {
+                "type": "object",
+                "required": ["x", "y"],
+                "properties": {
+                  "x": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "X coordinate in feet from left wall"
+                  },
+                  "y": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Y coordinate in feet from bottom wall"
+                  }
+                }
+              },
+              "dimensions": {
+                "type": "object",
+                "required": ["width", "height"],
+                "properties": {
+                  "width": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Opening width in feet"
+                  },
+                  "height": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Opening height in feet"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Array of room openings (doors, windows, etc.)"
+        }
+      }
+    },
+    "style_spec": {
+      "type": "object",
+      "description": "Style specification (if provided, otherwise Designer Agent will generate)",
+      "allOf": [
+        {
+          "$ref": "./inspiration-spec.json"
+        }
+      ]
+    },
+    "reference_image_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to reference image for style inspiration"
+    },
+    "budget_usd": {
+      "type": "number",
+      "minimum": 100,
+      "description": "Budget in USD"
+    },
+    "keep_list": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["product_id", "position"],
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "description": "Product ID to keep in the design"
+          },
+          "position": {
+            "type": "object",
+            "required": ["x", "y", "rotation"],
+            "properties": {
+              "x": {
+                "type": "number",
+                "minimum": 0,
+                "description": "X coordinate in feet"
+              },
+              "y": {
+                "type": "number",
+                "minimum": 0,
+                "description": "Y coordinate in feet"
+              },
+              "rotation": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 360,
+                "description": "Rotation in degrees"
+              }
+            }
+          }
+        }
+      },
+      "description": "List of existing furniture to keep in the design"
+    },
+    "room_type": {
+      "type": "string",
+      "enum": ["living_room", "bedroom", "dining_room", "kitchen", "office", "bathroom", "entryway"],
+      "description": "Type of room being designed"
+    },
+    "preferences": {
+      "type": "object",
+      "properties": {
+        "color_preference": {
+          "type": "string",
+          "description": "Preferred color scheme"
+        },
+        "style_preference": {
+          "type": "string",
+          "description": "Preferred style"
+        },
+        "functionality": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Functional requirements (e.g., 'seating_for_6', 'work_space')"
+        },
+        "accessibility": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Accessibility requirements"
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when request was created"
+    },
+    "user_id": {
+      "type": "string",
+      "description": "User identifier"
+    }
+  }
+}
