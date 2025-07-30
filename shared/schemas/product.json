@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Product",
+  "type": "object",
+  "properties": {
+    "product_id": { "type": "string" },
+    "name": { "type": "string" },
+    "dims": {
+      "type": "object",
+      "properties": {
+        "width": { "type": "number" },
+        "length": { "type": "number" },
+        "height": { "type": "number" }
+      },
+      "required": ["width", "length", "height"]
+    },
+    "price": { "type": "number" },
+    "currency": { "type": "string", "minLength": 3, "maxLength": 3 },
+    "materials": { "type": "array", "items": { "type": "string" } },
+    "image_url": { "type": "string", "format": "uri" },
+    "affiliate_link": { "type": "string", "format": "uri" },
+    "availability": { "type": "string", "enum": ["in_stock", "out_of_stock", "discontinued"] }
+  },
+  "required": ["product_id", "name", "dims", "price", "currency", "image_url", "affiliate_link"]
+}

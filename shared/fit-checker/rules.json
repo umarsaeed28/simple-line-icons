@@ -1,0 +1,7 @@
+{
+  "clearances": {
+    "walkway_min": 0.9,
+    "sofa_table": 0.3,
+    "door_swing": 0.75
+  }
+}
