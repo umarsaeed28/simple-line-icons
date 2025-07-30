@@ -1,0 +1,193 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Product Schema",
+  "description": "Normalized product data from partner connectors",
+  "type": "object",
+  "properties": {
+    "product_id": {
+      "type": "string",
+      "description": "Unique identifier for this product"
+    },
+    "partner_id": {
+      "type": "string",
+      "description": "Identifier of the partner/retailer"
+    },
+    "partner_name": {
+      "type": "string",
+      "description": "Name of the partner/retailer"
+    },
+    "name": {
+      "type": "string",
+      "description": "Product name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Product description"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["sofa", "chair", "table", "bed", "dresser", "nightstand", "bookshelf", "tv_stand", "coffee_table", "side_table", "dining_table", "dining_chair", "desk", "wardrobe", "mirror", "lamp", "rug", "artwork", "decor", "plant"],
+      "description": "Product category"
+    },
+    "subcategory": {
+      "type": "string",
+      "description": "More specific product subcategory"
+    },
+    "dimensions": {
+      "type": "object",
+      "properties": {
+        "width_cm": {
+          "type": "number",
+          "minimum": 0
+        },
+        "length_cm": {
+          "type": "number",
+          "minimum": 0
+        },
+        "height_cm": {
+          "type": "number",
+          "minimum": 0
+        },
+        "depth_cm": {
+          "type": "number",
+          "minimum": 0
+        },
+        "weight_kg": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": ["width_cm", "length_cm", "height_cm"],
+      "additionalProperties": false
+    },
+    "price": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "minimum": 0
+        },
+        "currency": {
+          "type": "string",
+          "enum": ["USD", "EUR", "GBP", "CAD", "AUD"]
+        },
+        "original_amount": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Original price before discounts"
+        },
+        "sale": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": ["amount", "currency"],
+      "additionalProperties": false
+    },
+    "materials": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["wood", "metal", "fabric", "leather", "glass", "ceramic", "stone", "plastic", "rattan", "marble", "bamboo", "steel", "aluminum", "cotton", "linen", "velvet", "wool", "polyester"]
+      },
+      "description": "Primary materials used in the product"
+    },
+    "colors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Available colors or primary color"
+    },
+    "style_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Style tags that match inspiration specs"
+    },
+    "images": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "alt": {
+            "type": "string"
+          },
+          "is_primary": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": ["url"]
+      },
+      "minItems": 1
+    },
+    "affiliate_link": {
+      "type": "string",
+      "format": "uri",
+      "description": "Affiliate link for purchase"
+    },
+    "availability": {
+      "type": "object",
+      "properties": {
+        "in_stock": {
+          "type": "boolean"
+        },
+        "stock_level": {
+          "type": "string",
+          "enum": ["high", "medium", "low", "out_of_stock"]
+        },
+        "estimated_delivery_days": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "shipping_cost": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": ["in_stock"]
+    },
+    "ratings": {
+      "type": "object",
+      "properties": {
+        "average": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "embedding": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "description": "Vector embedding for semantic search"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional partner-specific metadata",
+      "additionalProperties": true
+    }
+  },
+  "required": ["product_id", "partner_id", "partner_name", "name", "category", "dimensions", "price", "images", "affiliate_link", "availability", "created_at"],
+  "additionalProperties": false
+}

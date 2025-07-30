@@ -1,0 +1,182 @@
+{
+  "clearance_rules": {
+    "walkway_minimum_cm": 90,
+    "door_clearance_cm": 120,
+    "window_clearance_cm": 30,
+    "wall_clearance_cm": 5,
+    "between_furniture_cm": 60
+  },
+  "furniture_specific_rules": {
+    "sofa": {
+      "min_clearance_front_cm": 90,
+      "min_clearance_sides_cm": 30,
+      "min_clearance_back_cm": 15,
+      "coffee_table_distance_cm": {
+        "min": 45,
+        "max": 60
+      },
+      "tv_viewing_distance_cm": {
+        "min": 200,
+        "max": 400
+      }
+    },
+    "chair": {
+      "min_clearance_front_cm": 75,
+      "min_clearance_sides_cm": 15,
+      "min_clearance_back_cm": 60,
+      "table_distance_cm": {
+        "min": 45,
+        "max": 75
+      }
+    },
+    "dining_table": {
+      "min_clearance_all_sides_cm": 90,
+      "chair_clearance_cm": 60,
+      "wall_clearance_cm": 120
+    },
+    "dining_chair": {
+      "min_clearance_back_cm": 90,
+      "min_clearance_sides_cm": 30,
+      "table_clearance_cm": 45
+    },
+    "bed": {
+      "min_clearance_sides_cm": 60,
+      "min_clearance_foot_cm": 90,
+      "nightstand_distance_cm": {
+        "min": 30,
+        "max": 60
+      }
+    },
+    "coffee_table": {
+      "sofa_distance_cm": {
+        "min": 45,
+        "max": 60
+      },
+      "min_clearance_sides_cm": 45
+    },
+    "tv_stand": {
+      "viewing_distance_cm": {
+        "min": 200,
+        "max": 400
+      },
+      "height_from_floor_cm": {
+        "min": 40,
+        "max": 120
+      },
+      "wall_clearance_cm": 10
+    },
+    "dresser": {
+      "min_clearance_front_cm": 90,
+      "min_clearance_sides_cm": 30,
+      "drawer_clearance_cm": 90
+    },
+    "desk": {
+      "chair_clearance_cm": 90,
+      "min_clearance_sides_cm": 60,
+      "leg_clearance_cm": 60
+    },
+    "bookshelf": {
+      "min_clearance_front_cm": 60,
+      "wall_distance_cm": 5,
+      "tip_over_prevention_cm": 30
+    },
+    "wardrobe": {
+      "door_clearance_cm": 120,
+      "min_clearance_front_cm": 120,
+      "wall_clearance_cm": 5
+    }
+  },
+  "room_specific_rules": {
+    "living_room": {
+      "required_walkways": [
+        {
+          "name": "main_circulation",
+          "width_cm": 120
+        }
+      ],
+      "furniture_relationships": {
+        "sofa_to_coffee_table": {
+          "min_distance_cm": 45,
+          "max_distance_cm": 60
+        },
+        "sofa_to_tv": {
+          "min_distance_cm": 200,
+          "max_distance_cm": 400
+        }
+      }
+    },
+    "bedroom": {
+      "required_walkways": [
+        {
+          "name": "bed_access",
+          "width_cm": 90
+        }
+      ],
+      "furniture_relationships": {
+        "bed_to_nightstand": {
+          "max_distance_cm": 60
+        },
+        "bed_to_dresser": {
+          "min_distance_cm": 120
+        }
+      }
+    },
+    "dining_room": {
+      "required_walkways": [
+        {
+          "name": "chair_access",
+          "width_cm": 90
+        }
+      ],
+      "furniture_relationships": {
+        "table_to_chair": {
+          "distance_cm": 45
+        }
+      }
+    },
+    "office": {
+      "required_walkways": [
+        {
+          "name": "desk_access",
+          "width_cm": 90
+        }
+      ],
+      "furniture_relationships": {
+        "desk_to_chair": {
+          "distance_cm": 90
+        }
+      }
+    }
+  },
+  "accessibility_rules": {
+    "wheelchair_accessible": {
+      "min_walkway_cm": 150,
+      "min_turning_radius_cm": 150,
+      "door_clearance_cm": 150,
+      "furniture_clearance_cm": 90
+    },
+    "mobility_aid": {
+      "min_walkway_cm": 120,
+      "min_turning_radius_cm": 120,
+      "furniture_clearance_cm": 75
+    }
+  },
+  "safety_rules": {
+    "child_safe": {
+      "sharp_corner_avoidance": true,
+      "tip_over_prevention_cm": 30,
+      "small_object_height_cm": 150
+    },
+    "pet_friendly": {
+      "food_bowl_clearance_cm": 60,
+      "litter_box_clearance_cm": 90,
+      "pet_bed_clearance_cm": 45
+    }
+  },
+  "layout_optimization": {
+    "traffic_flow_weight": 0.3,
+    "furniture_relationships_weight": 0.4,
+    "space_efficiency_weight": 0.2,
+    "aesthetic_balance_weight": 0.1
+  }
+}
