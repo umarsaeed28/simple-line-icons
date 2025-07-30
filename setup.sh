@@ -109,6 +109,21 @@ install_dependencies() {
     npm install
     cd ..
     
+    # Frontend dependencies
+    print_status "Installing frontend dependencies..."
+    
+    # Next.js Admin
+    print_status "Installing Next.js Admin dependencies..."
+    cd frontend/nextjs-admin
+    npm install
+    cd ../..
+    
+    # Expo App
+    print_status "Installing Expo App dependencies..."
+    cd frontend/expo-app
+    npm install
+    cd ../..
+    
     print_success "All dependencies installed"
 }
 
@@ -211,6 +226,13 @@ health_check() {
     else
         print_error "User Agent health check failed"
     fi
+    
+    # Check Next.js Admin
+    if curl -f http://localhost:3000/api/health &> /dev/null; then
+        print_success "Next.js Admin is healthy"
+    else
+        print_error "Next.js Admin health check failed"
+    fi
 }
 
 # Main setup function
@@ -251,6 +273,8 @@ main() {
     echo "   - Designer Agent: http://localhost:3001"
     echo "   - Data Agent: http://localhost:3002"
     echo "   - User Agent: http://localhost:3003"
+    echo "   - Next.js Admin: http://localhost:3000"
+    echo "   - Expo App: http://localhost:19000"
     echo "   - RabbitMQ Management: http://localhost:15672 (admin/password)"
     echo "3. Run 'docker-compose logs -f' to view logs"
     echo "4. Run 'docker-compose down' to stop all services"

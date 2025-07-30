@@ -160,6 +160,34 @@ services:
       timeout: 10s
       retries: 3
 
+  expo-app:
+    build:
+      context: ./frontend/expo-app
+      dockerfile: Dockerfile
+    container_name: room-in-a-box-expo
+    ports:
+      - "19000:19000"
+      - "19001:19001"
+      - "19002:19002"
+    environment:
+      - NODE_ENV=development
+      - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+      - DESIGNER_AGENT_URL=http://designer-agent:3001
+      - DATA_AGENT_URL=http://data-agent:3002
+      - USER_AGENT_URL=http://user-agent:3003
+    depends_on:
+      - designer-agent
+      - data-agent
+      - user-agent
+    volumes:
+      - ./frontend/expo-app:/app
+      - /app/node_modules
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:19000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   # Development Tools
   redis:
     image: redis:7-alpine
