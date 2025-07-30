@@ -1,0 +1,185 @@
+{
+  "clearances": {
+    "walkway": {
+      "minimum_width": 36,
+      "description": "Minimum walkway width in inches",
+      "severity": "error"
+    },
+    "door_clearance": {
+      "minimum_width": 32,
+      "description": "Minimum clearance for doors in inches",
+      "severity": "error"
+    },
+    "window_clearance": {
+      "minimum_width": 24,
+      "description": "Minimum clearance for windows in inches",
+      "severity": "warning"
+    },
+    "furniture_spacing": {
+      "minimum_gap": 18,
+      "description": "Minimum gap between furniture pieces in inches",
+      "severity": "warning"
+    },
+    "fireplace_clearance": {
+      "minimum_distance": 36,
+      "description": "Minimum distance from fireplace in inches",
+      "severity": "error"
+    }
+  },
+  "furniture_placement": {
+    "sofa": {
+      "max_wall_coverage": 0.8,
+      "description": "Maximum percentage of wall that can be covered by sofa",
+      "severity": "warning",
+      "clearances": {
+        "front": 36,
+        "sides": 12,
+        "back": 6
+      }
+    },
+    "dining_table": {
+      "clearances": {
+        "all_sides": 36,
+        "description": "Clearance needed around dining table for chairs"
+      },
+      "severity": "error"
+    },
+    "bed": {
+      "clearances": {
+        "sides": 24,
+        "foot": 36,
+        "head": 12
+      },
+      "severity": "warning"
+    },
+    "desk": {
+      "clearances": {
+        "front": 30,
+        "sides": 18,
+        "back": 6
+      },
+      "severity": "warning"
+    },
+    "armchair": {
+      "clearances": {
+        "front": 24,
+        "sides": 12,
+        "back": 6
+      },
+      "severity": "warning"
+    },
+    "coffee_table": {
+      "clearances": {
+        "from_sofa": 18,
+        "from_chairs": 18
+      },
+      "severity": "warning"
+    },
+    "nightstand": {
+      "clearances": {
+        "from_bed": 6,
+        "from_wall": 6
+      },
+      "severity": "warning"
+    }
+  },
+  "room_specific": {
+    "living_room": {
+      "required_items": ["seating", "coffee_table"],
+      "optional_items": ["tv_stand", "side_table", "lamp", "rug"],
+      "traffic_patterns": [
+        {
+          "name": "main_entrance_to_seating",
+          "start": "entrance",
+          "end": "seating_area",
+          "min_width": 36
+        },
+        {
+          "name": "seating_to_dining",
+          "start": "seating_area",
+          "end": "dining_area",
+          "min_width": 36
+        }
+      ]
+    },
+    "bedroom": {
+      "required_items": ["bed", "nightstand"],
+      "optional_items": ["dresser", "armchair", "desk", "rug"],
+      "traffic_patterns": [
+        {
+          "name": "entrance_to_bed",
+          "start": "entrance",
+          "end": "bed",
+          "min_width": 36
+        },
+        {
+          "name": "bed_to_closet",
+          "start": "bed",
+          "end": "closet",
+          "min_width": 24
+        }
+      ]
+    },
+    "dining_room": {
+      "required_items": ["dining_table", "dining_chairs"],
+      "optional_items": ["buffet", "china_cabinet", "rug"],
+      "traffic_patterns": [
+        {
+          "name": "entrance_to_table",
+          "start": "entrance",
+          "end": "dining_table",
+          "min_width": 36
+        }
+      ]
+    },
+    "office": {
+      "required_items": ["desk", "desk_chair"],
+      "optional_items": ["bookshelf", "filing_cabinet", "guest_chair", "rug"],
+      "traffic_patterns": [
+        {
+          "name": "entrance_to_desk",
+          "start": "entrance",
+          "end": "desk",
+          "min_width": 30
+        }
+      ]
+    }
+  },
+  "style_considerations": {
+    "modern": {
+      "furniture_spacing": "generous",
+      "clearance_multiplier": 1.2,
+      "description": "Modern style prefers more open space"
+    },
+    "traditional": {
+      "furniture_spacing": "standard",
+      "clearance_multiplier": 1.0,
+      "description": "Traditional style uses standard spacing"
+    },
+    "minimalist": {
+      "furniture_spacing": "minimal",
+      "clearance_multiplier": 0.8,
+      "description": "Minimalist style uses tighter spacing"
+    },
+    "maximalist": {
+      "furniture_spacing": "tight",
+      "clearance_multiplier": 0.9,
+      "description": "Maximalist style allows tighter spacing"
+    }
+  },
+  "validation_levels": {
+    "strict": {
+      "description": "Strict validation - all rules must pass",
+      "allow_warnings": false
+    },
+    "normal": {
+      "description": "Normal validation - warnings allowed",
+      "allow_warnings": true
+    },
+    "relaxed": {
+      "description": "Relaxed validation - only critical errors",
+      "allow_warnings": true,
+      "ignore_minor_violations": true
+    }
+  }
+}

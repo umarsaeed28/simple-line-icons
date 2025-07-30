@@ -1,0 +1,254 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Package Ready Design",
+  "description": "Final design package with shopping list and room plan",
+  "type": "object",
+  "required": ["id", "request_id", "shopping_list", "room_plan_url", "total_cost", "created_at"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the design package"
+    },
+    "request_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Reference to the original user request"
+    },
+    "shopping_list": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["product_id", "name", "dimensions", "price", "affiliate_link", "position"],
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "description": "Product identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "Product name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Product description"
+          },
+          "dimensions": {
+            "type": "object",
+            "required": ["width", "length", "height"],
+            "properties": {
+              "width": {
+                "type": "number",
+                "minimum": 0,
+                "description": "Width in inches"
+              },
+              "length": {
+                "type": "number",
+                "minimum": 0,
+                "description": "Length in inches"
+              },
+              "height": {
+                "type": "number",
+                "minimum": 0,
+                "description": "Height in inches"
+              }
+            }
+          },
+          "price": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Product price"
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "description": "ISO 4217 currency code"
+          },
+          "affiliate_link": {
+            "type": "string",
+            "format": "uri",
+            "description": "Affiliate link to purchase"
+          },
+          "image_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Product image URL"
+          },
+          "position": {
+            "type": "object",
+            "required": ["x", "y", "rotation"],
+            "properties": {
+              "x": {
+                "type": "number",
+                "minimum": 0,
+                "description": "X coordinate in feet"
+              },
+              "y": {
+                "type": "number",
+                "minimum": 0,
+                "description": "Y coordinate in feet"
+              },
+              "rotation": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 360,
+                "description": "Rotation in degrees"
+              }
+            }
+          },
+          "category": {
+            "type": "string",
+            "description": "Product category"
+          },
+          "brand": {
+            "type": "string",
+            "description": "Product brand"
+          },
+          "availability": {
+            "type": "string",
+            "enum": ["in_stock", "out_of_stock", "pre_order", "discontinued"]
+          },
+          "fit_status": {
+            "type": "string",
+            "enum": ["fits", "fits_with_warning", "does_not_fit"],
+            "description": "Fit-checker validation status"
+          },
+          "fit_warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Warnings from fit-checker"
+          }
+        }
+      },
+      "description": "List of products in the design"
+    },
+    "room_plan_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to the 2D room plan image"
+    },
+    "room_plan_3d_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to the 3D room visualization (optional)"
+    },
+    "total_cost": {
+      "type": "object",
+      "required": ["amount", "currency"],
+      "properties": {
+        "amount": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total cost amount"
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "description": "ISO 4217 currency code"
+        }
+      }
+    },
+    "budget_utilization": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Percentage of budget utilized"
+    },
+    "style_spec": {
+      "type": "object",
+      "description": "Final style specification used",
+      "allOf": [
+        {
+          "$ref": "./inspiration-spec.json"
+        }
+      ]
+    },
+    "fit_check_results": {
+      "type": "object",
+      "properties": {
+        "overall_status": {
+          "type": "string",
+          "enum": ["valid", "warnings", "errors"],
+          "description": "Overall fit-check status"
+        },
+        "clearance_violations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "item_id": {
+                "type": "string"
+              },
+              "violation_type": {
+                "type": "string",
+                "enum": ["walkway", "door_clearance", "window_clearance", "furniture_spacing"]
+              },
+              "severity": {
+                "type": "string",
+                "enum": ["warning", "error"]
+              },
+              "message": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "walkway_paths": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "start": {
+                "type": "object",
+                "properties": {
+                  "x": { "type": "number" },
+                  "y": { "type": "number" }
+                }
+              },
+              "end": {
+                "type": "object",
+                "properties": {
+                  "x": { "type": "number" },
+                  "y": { "type": "number" }
+                }
+              },
+              "width": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when package was created"
+    },
+    "processing_time_ms": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Total processing time in milliseconds"
+    },
+    "agent_versions": {
+      "type": "object",
+      "properties": {
+        "designer_agent": {
+          "type": "string",
+          "description": "Designer Agent version"
+        },
+        "data_agent": {
+          "type": "string",
+          "description": "Data Agent version"
+        },
+        "user_agent": {
+          "type": "string",
+          "description": "User Agent version"
+        }
+      }
+    }
+  }
+}

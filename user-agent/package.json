@@ -1,0 +1,52 @@
+{
+  "name": "user-agent",
+  "version": "1.0.0",
+  "description": "Room design processing and fit-checking agent",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "test": "jest",
+    "lint": "eslint src/**/*.ts",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "winston": "^3.11.0",
+    "axios": "^1.6.2",
+    "uuid": "^9.0.1",
+    "dotenv": "^16.3.1",
+    "amqplib": "^0.10.3",
+    "@supabase/supabase-js": "^2.38.4",
+    "canvas": "^2.11.2",
+    "sharp": "^0.32.6",
+    "three": "^0.158.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17",
+    "@types/node": "^20.10.0",
+    "@types/uuid": "^9.0.7",
+    "@types/amqplib": "^0.10.4",
+    "@types/canvas": "^2.11.0",
+    "@types/three": "^0.158.3",
+    "typescript": "^5.3.2",
+    "ts-node": "^10.9.1",
+    "jest": "^29.7.0",
+    "@types/jest": "^29.5.8",
+    "eslint": "^8.54.0",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0"
+  },
+  "keywords": [
+    "room-design",
+    "fit-checking",
+    "furniture-placement",
+    "shopping-list"
+  ],
+  "author": "Room-in-a-Box Team",
+  "license": "MIT"
+}
